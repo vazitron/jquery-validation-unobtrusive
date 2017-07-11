@@ -49,20 +49,25 @@
     }
 
     function onError(error, inputElement) {  // 'this' is the form element
-        var container = $(this).find("[data-valmsg-for='" + escapeAttributeValue(inputElement[0].name) + "']"),
-            replaceAttrValue = container.attr("data-valmsg-replace"),
-            replace = replaceAttrValue ? $.parseJSON(replaceAttrValue) !== false : null;
+        var containers = $(this).find("[data-valmsg-for='" + escapeAttributeValue(inputElement[0].name) + "']");
 
-        container.removeClass("field-validation-valid").addClass("field-validation-error");
-        error.data("unobtrusiveContainer", container);
+        containers.each(function () {
+            var container = $(this),
+                replaceAttrValue = container.attr("data-valmsg-replace"),
+                replace = replaceAttrValue ? $.parseJSON(replaceAttrValue) !== false : null;
 
-        if (replace) {
-            container.empty();
-            error.removeClass("input-validation-error").appendTo(container);
-        }
-        else {
-            error.hide();
-        }
+            container.removeClass("field-validation-valid").addClass("field-validation-error");
+
+            if (replace) {
+                container.empty();
+                error.removeClass("input-validation-error").appendTo(container);
+            }
+            else {
+                error.hide();
+            }
+        });
+        
+        error.data("unobtrusiveContainer", containers);
     }
 
     function onErrors(event, validator) {  // 'this' is the form element
@@ -80,9 +85,13 @@
     }
 
     function onSuccess(error) {  // 'this' is the form element
-        var container = error.data("unobtrusiveContainer");
+        var containers = error.data("unobtrusiveContainer");
 
-        if (container) {
+        if (!containers)
+            return;
+
+        containers.each(function () {
+            var container = $(this);
             var replaceAttrValue = container.attr("data-valmsg-replace"),
                 replace = replaceAttrValue ? $.parseJSON(replaceAttrValue) : null;
 
@@ -92,7 +101,7 @@
             if (replace) {
                 container.empty();
             }
-        }
+        });
     }
 
     function onReset(event) {  // 'this' is the form element
