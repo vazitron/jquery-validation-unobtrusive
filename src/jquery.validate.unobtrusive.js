@@ -56,7 +56,7 @@
                 replaceAttrValue = container.attr("data-valmsg-replace"),
                 replace = replaceAttrValue ? $.parseJSON(replaceAttrValue) !== false : null;
 
-            container.removeClass("field-validation-valid").addClass("field-validation-error");
+            container.removeClass("field-validation-valid field-validation-pristine").addClass("field-validation-error");
 
             if (replace) {
                 container.empty();
@@ -122,7 +122,7 @@
             .addClass("validation-summary-valid")
             .removeClass("validation-summary-errors");
         $form.find(".field-validation-error")
-            .addClass("field-validation-valid")
+            .addClass("field-validation-valid field-validation-pristine")
             .removeClass("field-validation-error")
             .removeData("unobtrusiveContainer")
             .find(">*")  // If we were using valmsg-replace, get the underlying error
